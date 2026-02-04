@@ -68,8 +68,8 @@ pip install gradio  # optional, for demo
 
 ### Operating Modes
 
-- **Full Mode** (`LITE_MODE=False`): Downloads video, extracts frames, generates VLM captions
-- **Lite Mode** (`LITE_MODE=True`): Uses only SRT subtitles (no video download/VLM captioning). Good for YouTube podcasts.
+- **Full Mode** (`LITE_MODE=False`): Downloads video, extracts frames, generates VLM captions. All three search tools available.
+- **Lite Mode** (`LITE_MODE=True`): Uses only SRT subtitles (no video download/VLM captioning). `frame_inspect_tool` is disabled. Good for YouTube podcasts.
 
 ## Key Files
 
@@ -102,6 +102,7 @@ LITE_MODE = True                # Use only subtitles (no video download)
 MAX_ITERATIONS = 3              # Max reasoning steps
 CLIP_SECS = 10                  # Clip duration for segmentation
 VIDEO_FPS = 2                   # Frame extraction rate
+SINGLE_CHOICE_QA = True         # For benchmarks: agent returns option letters
 ```
 
 ## Data Flow
@@ -121,3 +122,9 @@ The agent autonomously chooses search strategies:
 - **Simple Action:** Global browse → Clip search → Frame inspect → Answer
 - **Iterative Search:** Multiple clip search/frame inspect rounds for complex queries
 - **Global Browse Only:** Sufficient for high-level questions about video type/content
+
+### Agent Methods
+
+- `run(question)`: Single synchronous execution, returns message history
+- `stream_run(question)`: Generator that yields messages as they're produced (for UI streaming)
+- `parallel_run(questions, max_workers=4)`: Run multiple questions concurrently on the same video
