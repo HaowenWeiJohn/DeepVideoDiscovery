@@ -338,6 +338,7 @@ def process_video_lite(
     """
     Process video in LITE_MODE using SRT subtitles.
     """
+    os.makedirs(output_caption_folder, exist_ok=True)
     captions = parse_srt_to_dict(subtitle_file_path)
     frame_captions = {}
     for key, text in captions.items():
