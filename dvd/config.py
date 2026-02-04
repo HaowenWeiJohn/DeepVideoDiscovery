@@ -1,4 +1,5 @@
 import os
+import dotenv
 
 # ------------------ video download and segmentation configuration ------------------ #
 VIDEO_DATABASE_FOLDER = "./video_database/"
@@ -7,7 +8,12 @@ VIDEO_FPS = 2 # frames per second
 CLIP_SECS = 10 # seconds
 
 # ------------------ model configuration ------------------ #
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", None) # will overwrite Azure OpenAI setting
+# OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", None) # will overwrite Azure OpenAI setting
+
+# this will load the .env file and set the OPENAI_API_KEY environment variable
+dotenv.load_dotenv()
+openai_api_key = os.getenv("OPENAI_API_KEY")
+
 
 AOAI_CAPTION_VLM_ENDPOINT_LIST = [""]
 AOAI_CAPTION_VLM_MODEL_NAME = "gpt-4.1-mini"
