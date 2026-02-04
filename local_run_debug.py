@@ -11,15 +11,15 @@ def main():
     # add argument to specify the video url and question: https://www.youtube.com/shorts/nW8cWT2ufAQ
     video_url = "https://www.youtube.com/shorts/nW8cWT2ufAQ"
     question = "What is the video about?"
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
-    parser = argparse.ArgumentParser(description="Run DVDCoreAgent on a video.")
-    parser.add_argument("video_url", help="The URL of the video to process.")
-    parser.add_argument("question", help="The question to ask about the video.")
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser(description="Run DVDCoreAgent on a video.")
+    # parser.add_argument("video_url", help="The URL of the video to process.")
+    # parser.add_argument("question", help="The question to ask about the video.")
+    # args = parser.parse_args()
 
-    video_url = args.video_url
-    question = args.question
+    # video_url = args.video_url
+    # question = args.question
 
     # Extract video ID from URL
     if "v=" in video_url:
