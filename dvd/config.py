@@ -3,6 +3,10 @@ import dotenv
 
 # ------------------ video download and segmentation configuration ------------------ #
 VIDEO_DATABASE_FOLDER = "./video_database/"
+
+# if the system is a linux machine, the Database folder is: /home/hwjwei/projects/longvideo/DeepVideoDiscovery/video_database/
+VIDEO_DATABASE_FOLDER = "/home/hwjwei/projects/longvideo/DeepVideoDiscovery/video_database/" if os.name == "posix" else "./video_database/"
+
 VIDEO_RESOLUTION = "360" # denotes the height of the video 
 VIDEO_FPS = 2 # frames per second
 CLIP_SECS = 10 # seconds
@@ -12,7 +16,7 @@ CLIP_SECS = 10 # seconds
 
 # this will load the .env file and set the OPENAI_API_KEY environment variable
 dotenv.load_dotenv()
-openai_api_key = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 AOAI_CAPTION_VLM_ENDPOINT_LIST = [""]
@@ -30,7 +34,7 @@ AOAI_EMBEDDING_LARGE_MODEL_NAME = "text-embedding-3-large"
 AOAI_EMBEDDING_LARGE_DIM = 3072
 
 # ------------------ agent and tool setting ------------------ #
-LITE_MODE = True # if True, only leverage srt subtitle, no pixel downloaded or pixel captioning
+LITE_MODE = False # if True, only leverage srt subtitle, no pixel downloaded or pixel captioning
 GLOBAL_BROWSE_TOPK = 300
 OVERWRITE_CLIP_SEARCH_TOPK = 0 # 0 means no overwrite and let agent decide
 
