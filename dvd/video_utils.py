@@ -45,11 +45,14 @@ def load_video(
 
         ydl_opts = {
             'format': (
-                f'bestvideo[height<={config.VIDEO_RESOLUTION}][ext=mp4]'
-                f'best[height<={config.VIDEO_RESOLUTION}][ext=mp4]'
+                f'bestvideo[height<={config.VIDEO_RESOLUTION}][ext=mp4]+bestaudio[ext=m4a]/'
+                f'best[height<={config.VIDEO_RESOLUTION}][ext=mp4]/'
+                f'best'
             ),
             'outtmpl': os.path.join(raw_video_dir, '%(id)s.%(ext)s'),
             'merge_output_format': 'mp4',
+            # Use android_vr client which works without PO Token or authentication
+            'extractor_args': {'youtube': {'player_client': ['android_vr']}},
         }
         if with_subtitle:
             ydl_opts.update({
