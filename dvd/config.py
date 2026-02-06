@@ -39,4 +39,4 @@ GLOBAL_BROWSE_TOPK = 300
 OVERWRITE_CLIP_SEARCH_TOPK = 0 # 0 means no overwrite and let agent decide
 
 SINGLE_CHOICE_QA = True  # Design for benchmark test. If True, the agent will only return options for single-choice questions.
-MAX_ITERATIONS = 3  # Maximum number of iterations for the agent to run
+MAX_ITERATIONS = 10  # Maximum number of iterations for the agent to run
