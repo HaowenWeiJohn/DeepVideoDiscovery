@@ -87,9 +87,9 @@ def call_openai_model_with_tools(
     if api_key:
         headers = {  
             "Content-Type": "application/json",  
-            'Authorization': 'Bearer ' + api_key
+            'Authorization': 'Bearer ' + 'Wf9i1OQCgKA4nAVZ__8CYJhfhExt_Yob120jbjIz0yA'
         }
-        endpoint = "https://api.openai.com/v1"
+        endpoint = "https://api.dd.works/v1"
         url = f"{endpoint}/chat/completions"
     else:
         credential = AzureCliCredential()  
@@ -106,7 +106,7 @@ def call_openai_model_with_tools(
             raise ValueError("Endpoints must be a string or a list of strings.")
         url = f"{endpoint}/openai/deployments/{model_name}/chat/completions?api-version=2025-03-01-preview"
 
-    model = model_name
+    model = 'Qwen/Qwen3-VL-235B-A22B-Instruct-FP8'
       
     payload = {  
         "model": model,
