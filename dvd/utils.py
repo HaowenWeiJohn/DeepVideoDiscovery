@@ -87,9 +87,9 @@ def call_openai_model_with_tools(
     if api_key:
         headers = {  
             "Content-Type": "application/json",  
-            'Authorization': 'Bearer ' + 'Wf9i1OQCgKA4nAVZ__8CYJhfhExt_Yob120jbjIz0yA'
+            'Authorization': 'Bearer ' + api_key
         }
-        endpoint = "https://api.dd.works/v1"
+        endpoint = "https://api.openai.com/v1"
         url = f"{endpoint}/chat/completions"
     else:
         credential = AzureCliCredential()  
