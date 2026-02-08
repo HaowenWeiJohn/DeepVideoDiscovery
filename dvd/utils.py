@@ -10,7 +10,7 @@ from mimetypes import guess_type
 import cv2
 import requests
 from azure.identity import AzureCliCredential
-
+import dvd.config as config
 
 def retry_with_exponential_backoff(
     func,
@@ -89,7 +89,7 @@ def call_openai_model_with_tools(
             "Content-Type": "application/json",  
             'Authorization': 'Bearer ' + api_key
         }
-        endpoint = "https://api.openai.com/v1"
+        endpoint = config.ENDPOINT
         url = f"{endpoint}/chat/completions"
     else:
         credential = AzureCliCredential()  
@@ -106,7 +106,7 @@ def call_openai_model_with_tools(
             raise ValueError("Endpoints must be a string or a list of strings.")
         url = f"{endpoint}/openai/deployments/{model_name}/chat/completions?api-version=2025-03-01-preview"
 
-    model = 'Qwen/Qwen3-VL-235B-A22B-Instruct-FP8'
+    model = model_name
       
     payload = {  
         "model": model,
@@ -164,7 +164,7 @@ class AzureOpenAIEmbeddingService:
         if api_key:
             headers = {  
                 "Content-Type": "application/json",  
-                'Authorization': 'Bearer ' + api_key
+                'Authorization': 'Bearer ' + config.OPENAI_KEY
             }
             endpoint = "https://api.openai.com/v1"
             url = f"{endpoint}/embeddings"

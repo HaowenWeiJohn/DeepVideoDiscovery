@@ -6,7 +6,7 @@ dotenv.load_dotenv()
 
 
 BASE_URL = "https://api.dd.works/v1"
-API_KEY = os.getenv("VLLM_API_KEY")
+API_KEY = 'Wf9i1OQCgKA4nAVZ__8CYJhfhExt_Yob120jbjIz0yA'
 
 MODEL = "Qwen/Qwen3-VL-235B-A22B-Instruct-FP8"
 

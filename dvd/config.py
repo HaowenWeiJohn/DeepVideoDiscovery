@@ -16,18 +16,53 @@ CLIP_SECS = 10 # seconds
 
 # this will load the .env file and set the OPENAI_API_KEY environment variable
 dotenv.load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+
+
+SERVER = 'VLLM'
+
+# server must be OPENAI or VLLM
+assert SERVER in ["OPENAI", "VLLM"], "SERVER must be OPENAI or VLLM"
+
+OPENAI_KEY = os.getenv("OPENAI_API_KEY")
+
+
+if SERVER == "OPENAI":
+    print("OPENAI server is used")
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    assert OPENAI_API_KEY is not None, "OPENAI_API_KEY is not set"
+    ENDPOINT = 'https://api.openai.com/v1'
+    AOAI_CAPTION_VLM_MODEL_NAME = "gpt-4.1-mini"
+    AOAI_ORCHESTRATOR_LLM_MODEL_NAME = "o3"
+    AOAI_TOOL_VLM_MODEL_NAME = "gpt-4.1-mini"
+    AOAI_TOOL_VLM_MAX_FRAME_NUM = 50
+    
+elif SERVER == "VLLM":
+    print("VLLM server is used")
+    OPENAI_API_KEY = os.getenv("VLLM_API_KEY")
+    assert OPENAI_API_KEY is not None, "VLLM_API_KEY is not set"
+    ENDPOINT = 'https://api.dd.works/v1'
+    AOAI_CAPTION_VLM_MODEL_NAME = 'Qwen/Qwen3-VL-235B-A22B-Instruct-FP8'
+    AOAI_ORCHESTRATOR_LLM_MODEL_NAME = 'Qwen/Qwen3-VL-235B-A22B-Instruct-FP8'
+    AOAI_TOOL_VLM_MODEL_NAME = 'Qwen/Qwen3-VL-235B-A22B-Instruct-FP8'
+    AOAI_TOOL_VLM_MAX_FRAME_NUM = 50
+
+
+
+
+
+
 
 
 AOAI_CAPTION_VLM_ENDPOINT_LIST = [""]
-AOAI_CAPTION_VLM_MODEL_NAME = "gpt-4.1-mini"
+# AOAI_CAPTION_VLM_MODEL_NAME = "gpt-4.1-mini"
 
 AOAI_ORCHESTRATOR_LLM_ENDPOINT_LIST = [""]
-AOAI_ORCHESTRATOR_LLM_MODEL_NAME = "o3"
+# AOAI_ORCHESTRATOR_LLM_MODEL_NAME = "o3"
 
 AOAI_TOOL_VLM_ENDPOINT_LIST = [""]
-AOAI_TOOL_VLM_MODEL_NAME = "gpt-4.1-mini"
-AOAI_TOOL_VLM_MAX_FRAME_NUM = 50
+# AOAI_TOOL_VLM_MODEL_NAME = "gpt-4.1-mini"
+# AOAI_TOOL_VLM_MAX_FRAME_NUM = 50
 
 AOAI_EMBEDDING_RESOURCE_LIST = [""]
 AOAI_EMBEDDING_LARGE_MODEL_NAME = "text-embedding-3-large"
