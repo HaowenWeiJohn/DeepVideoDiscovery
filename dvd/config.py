@@ -48,8 +48,14 @@ elif SERVER == "VLLM":
     AOAI_TOOL_VLM_MAX_FRAME_NUM = 50
 
 
-
-
+if SERVER == "OPENAI":
+    EMBEDDING_ENDPOINT = "https://api.openai.com/v1"
+    AOAI_EMBEDDING_LARGE_MODEL_NAME = "text-embedding-3-large"
+    AOAI_EMBEDDING_LARGE_DIM = 3072
+elif SERVER == "VLLM":
+    EMBEDDING_ENDPOINT = "http://localhost:8888/v1"
+    AOAI_EMBEDDING_LARGE_MODEL_NAME = "Qwen/Qwen3-Embedding-4B"
+    AOAI_EMBEDDING_LARGE_DIM = 2560
 
 
 
@@ -65,8 +71,6 @@ AOAI_TOOL_VLM_ENDPOINT_LIST = [""]
 # AOAI_TOOL_VLM_MAX_FRAME_NUM = 50
 
 AOAI_EMBEDDING_RESOURCE_LIST = [""]
-AOAI_EMBEDDING_LARGE_MODEL_NAME = "text-embedding-3-large"
-AOAI_EMBEDDING_LARGE_DIM = 3072
 
 # ------------------ agent and tool setting ------------------ #
 LITE_MODE = False # if True, only leverage srt subtitle, no pixel downloaded or pixel captioning

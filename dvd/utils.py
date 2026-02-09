@@ -164,9 +164,9 @@ class AzureOpenAIEmbeddingService:
         if api_key:
             headers = {  
                 "Content-Type": "application/json",  
-                'Authorization': 'Bearer ' + config.OPENAI_KEY
+                'Authorization': 'Bearer ' + api_key
             }
-            endpoint = "https://api.openai.com/v1"
+            endpoint = config.EMBEDDING_ENDPOINT
             url = f"{endpoint}/embeddings"
         else:
             if isinstance(endpoints, str):
