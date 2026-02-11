@@ -1,11 +1,15 @@
 import copy
 import json
+import os
 from typing import Annotated as A
 from typing import Literal as L
 
+import numpy as np
+
 import dvd.config as config
-from dvd.build_database import (clip_search_tool, frame_inspect_tool,
-                                global_browse_tool, init_single_video_db)
+from dvd.build_database import (clip_search_tool, convert_hhmmss_to_seconds,
+                                frame_inspect_tool, global_browse_tool,
+                                init_single_video_db)
 from dvd.func_call_shema import as_json_schema
 from dvd.func_call_shema import doc as D
 from dvd.utils import call_openai_model_with_tools
@@ -160,8 +164,61 @@ Question: QUESTION_PLACEHOLDER"""
         return msgs
     
     def run_with_sampled_images(self, question, n_sampled_images=8) -> list[dict]:
-        # sample 8 images from the video evenly and get the result.
-        return
+        """
+        Sample n_sampled_images frames evenly from the video and answer
+        the question in a single VLM call (no tool use, no agent loop).
+        Returns message history as list[dict] for comparison with run().
+        """
+        # 1. Get video metadata from the database
+        meta = self.video_db.get_additional_data()
+        video_length_hhmmss = meta['video_length']
+        video_file_root = meta['video_file_root']
+        fps = meta.get('fps', config.VIDEO_FPS)
+        video_length_secs = convert_hhmmss_to_seconds(video_length_hhmmss)
+
+        # 2. Compute total frame count and sample n evenly-spaced frame indices
+        total_frames = int(video_length_secs * fps)
+        frame_indices = np.linspace(0, total_frames - 1, num=n_sampled_images, dtype=int)
+        frame_indices = sorted(set(frame_indices))  # deduplicate
+
+        # 3. Build frame file paths
+        image_paths = [
+            os.path.join(video_file_root, "frames", f"frame_n{idx:06d}.jpg")
+            for idx in frame_indices
+        ]
+
+        # 4. Build messages (simple system + user prompt, no tool schemas)
+        msgs = [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant that answers questions about video content based on sampled frames.",
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"These are {len(image_paths)} frames evenly sampled from a video of length {video_length_hhmmss}. "
+                    "Carefully observe the frames and answer the following question.\n\n"
+                    f"Question: {question}"
+                ),
+            },
+        ]
+
+        # 5. Single VLM call — no tools, no agent loop
+        response = call_openai_model_with_tools(
+            messages=msgs,
+            endpoints=config.AOAI_TOOL_VLM_ENDPOINT_LIST,
+            model_name=config.AOAI_TOOL_VLM_MODEL_NAME,
+            api_key=config.OPENAI_API_KEY,
+            image_paths=image_paths,
+            # temperature=0.0,
+            # max_tokens=4096,
+        )
+        if response is None:
+            return None
+
+        response.setdefault("role", "assistant")
+        msgs.append(response)
+        return msgs
 
 
 

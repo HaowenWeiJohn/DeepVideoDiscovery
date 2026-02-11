@@ -101,9 +101,9 @@ for video_file in video_files:
         print("--------------------------------------------------------------------------------------")
         print()
         # check if there is a index already in the results, idx is a string
-        if idx in results:
+        if str(idx) in results:
             print(f"Question {idx} already processed")
-            continue
+            # continue
         else:
             question = row.to_dict().copy()
             true_label_row_name = ados_scoring_sheet.columns[-1]
@@ -121,7 +121,7 @@ for video_file in video_files:
             with open(results_file, 'w') as f:
                 json.dump(results, f, indent=4)
         
-        queestion = results[str(idx)]
+        question = results[str(idx)]
         
         prompt = (
             f"Module: {question['module']}\n"
@@ -134,24 +134,39 @@ for video_file in video_files:
 
         agent_prompt = PREFIX_PROMPT + prompt
         print(f"Agent prompt: {agent_prompt}")
-        print("--------------------------------")
-        print()
-        
-        # Run DVD Agent
+
         print("Initializing DVDCoreAgent...")
         agent = DVDCoreAgent(video_db_path, caption_file, config.MAX_ITERATIONS)
         print("Agent initialized.")
 
-        print(f"Running agent with question: '{question}'")
-        msgs = agent.run(agent_prompt)
-        answer = extract_answer(msgs[-1])
-        # print DVD agent answer and ground truth answer
-        print(f"DVD Agent answer: {answer}")
+        
+        # Run DVD Agent and sampled images agent
+        print("--------------------------------")
+        print("Running DVD Agent...")
+        print()
+        dvd_agent_msgs = agent.run(agent_prompt)
+        dvd_agent_answer = extract_answer(dvd_agent_msgs[-1])
+        print(f"DVD Agent answer: {dvd_agent_answer}")
+        question['dvd_module'].append(dvd_agent_answer)
+
+        print("--------------------------------")
+        print("Running with sampled images...")
+        print()
+        sampled_images_msgs = agent.run_with_sampled_images(agent_prompt)
+        sampled_images_answer = extract_answer(sampled_images_msgs[-1])
+        print(f"Sampled images answer: {sampled_images_answer}")
+        question['random_sample_8_module'].append(sampled_images_answer)
+
+        print("--------------------------------")
         print(f"Ground truth answer: {ground_truth}")
 
         # add the answer to the dvd_module
-        question['dvd_module'].append(answer)
+
+
         # save the results to the json file
+
+
+
         with open(results_file, 'w') as f:
             json.dump(results, f, indent=4)
 
@@ -169,7 +184,49 @@ for video_file in video_files:
 
 
     
-    
+#     --------------------------------------------------------------------------------------
+# Processing question 28
+# --------------------------------------------------------------------------------------
+
+# Agent prompt: You are observing a video recording of an ADOS-2 (Autism Diagnostic Observation Schedule, 2nd Edition) clinical assessment session. In this video, a trained clinician administers standardized activities and social presses to a child. Your task is to carefully watch the child's behavior throughout the session — including their language, social interactions, eye contact, gestures, play, and repetitive behaviors — and then score the following item based on what you observe. Focus on the child's behavior, not the clinician's.
+
+# Module: B: Reciprocal Social Interaction
+# Test Type: B18. Overall Quality of Rapport
+# Description: The code for this item is a summary rating that reflects the examiner's overall judgment of the rapport or comfort level established with the child during the ADOS-2 evaluation. The rating should take into account the degree to which the examiner had to modify his or her own behavior to maintain the interaction successfully.
+
+# Provide ONE rating from the following options (ADOS codes):
+# 0 = Comfortable interaction between the child and examiner that is appropriate to the context of the ADOS-2 assessment.
+# 1 = Interaction sometimes comfortable, but not sustained (e.g., sometimes feels awkward or stilted, or the child's behavior seems mechanical or slightly inappropriate).
+# 2 = One-sided or unusual interaction resulting in a consistently mildly uncomfortable session.
+# 3 = The child shows minimal regard for the examiner AND/OR the observation was markedly difficult or uncomfortable for a significant proportion of the time.
+
+# Answer with a SINGLE integer code.
+# Initializing DVDCoreAgent...
+# INFO:nano-vectordb:Load (274, 2560) data
+# INFO:nano-vectordb:Init {'embedding_dim': 2560, 'metric': 'cosine', 'storage_file': '/scratch/hwjwei/ADOS/video_dataset/deborah_module_t/database.json'} 274 data
+# Database /scratch/hwjwei/ADOS/video_dataset/deborah_module_t/database.json already exists.
+# Agent initialized.
+# --------------------------------
+# Running DVD Agent...
+
+# Calling function `global_browse_tool` with args: {'database': NanoVectorDB(embedding_dim=2560, metric='cosine', storage_file='/scratch/hwjwei/ADOS/video_dataset/deborah_module_t/database.json'), 'query': 'Overall quality of rapport between child and examiner during ADOS-2 assessment'}
+# Calling function `frame_inspect_tool` with args: {'database': NanoVectorDB(embedding_dim=2560, metric='cosine', storage_file='/scratch/hwjwei/ADOS/video_dataset/deborah_module_t/database.json'), 'question': 'Does the child show consistent comfort and reciprocal interaction with the examiner, or are there frequent signs of discomfort, avoidance, or one-sided interaction?', 'time_ranges_hhmmss': [['00:00:00, 00:45:39']]}
+# Traceback (most recent call last):
+#   File "/home/hwjwei/projects/longvideo/DeepVideoDiscovery/ados_benchmark_run.py", line 147, in <module>
+#     dvd_agent_msgs = agent.run(agent_prompt)
+#                      ^^^^^^^^^^^^^^^^^^^^^^^
+#   File "/home/hwjwei/projects/longvideo/DeepVideoDiscovery/dvd/dvd_core.py", line 160, in run
+#     self._exec_tool(tool_call, msgs)
+#   File "/home/hwjwei/projects/longvideo/DeepVideoDiscovery/dvd/dvd_core.py", line 117, in _exec_tool
+#     result = self.name_to_function_map[name](**args)
+#              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "/home/hwjwei/projects/longvideo/DeepVideoDiscovery/dvd/build_database.py", line 34, in frame_inspect_tool
+#     start_secs = convert_hhmmss_to_seconds(time_range[0])
+#                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "/home/hwjwei/projects/longvideo/DeepVideoDiscovery/dvd/build_database.py", line 235, in convert_hhmmss_to_seconds
+#     hours, minutes, seconds = map(int, parts)
+#     ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: '00, 00'
 
 
 
