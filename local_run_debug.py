@@ -10,7 +10,7 @@ def main():
 
     # add argument to specify the video url and question: https://www.youtube.com/shorts/nW8cWT2ufAQ
     video_url = "https://www.youtube.com/shorts/nW8cWT2ufAQ"
-    question = "How many cats are there in the video? Answeer with a single digit without any other words."
+    question = "How many Person are there in the video?"
     # args = parser.parse_args()
 
     # parser = argparse.ArgumentParser(description="Run DVDCoreAgent on a video.")

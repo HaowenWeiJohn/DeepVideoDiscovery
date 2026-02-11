@@ -32,9 +32,9 @@ def retry_with_exponential_backoff(
                 return func(*args, **kwargs)
             # Raise exceptions for any errors not specified
             except Exception as e:
-                if "rate limit" in str(e).lower() or "timed out" in str(e) \
-                                    or "Too Many Requests" in str(e) or "Forbidden for url" in str(e) \
-                                    or "internal" in str(e).lower():
+                if "rate limit" in str(e).lower() or "timed out" in str(e).lower() \
+                                    or "too many requests" in str(e).lower() or "Forbidden for url" in str(e) \
+                                    or "internal" in str(e).lower() or "gateway" in str(e).lower():
                     # Increment retries
                     num_retries += 1
 
@@ -47,7 +47,7 @@ def retry_with_exponential_backoff(
                     delay *= exponential_base * (1 + jitter * random.random())
                     print(f"Retrying in {delay} seconds for {str(e)}...")
                     # Sleep for the delay
-                    time.sleep(delay)
+                    time.sleep(5) # change the delay to a constant
                 else:
                     print(str(e))
                     return None
@@ -151,7 +151,7 @@ def call_openai_model_with_tools(
 class AzureOpenAIEmbeddingService:  
     @staticmethod  
     @retry_with_exponential_backoff
-    def get_embeddings(endpoints, model_name, input_text, api_key: str = None):  
+    def get_embeddings(endpoints, model_name, input_text, api_key: str = None, is_query: bool = False):
         """  
         Call Azure OpenAI Embedding service and get embeddings for the input text.  
   
@@ -186,8 +186,16 @@ class AzureOpenAIEmbeddingService:
             }
         
         model = model_name
-        # Set up the payload for the request  
-        payload = {  
+
+        if is_query and config.EMBEDDING_QUERY_INSTRUCTION:
+            prefix = config.EMBEDDING_QUERY_INSTRUCTION
+            if isinstance(input_text, list):
+                input_text = [prefix + t for t in input_text]
+            else:
+                input_text = prefix + input_text
+
+        # Set up the payload for the request
+        payload = {
             "input": input_text,
             "model": model
         }  

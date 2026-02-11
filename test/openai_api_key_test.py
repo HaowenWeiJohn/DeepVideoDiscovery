@@ -5,7 +5,7 @@ dotenv.load_dotenv()
 
 
 
-BASE_URL = "https://api.dd.works/v1"
+BASE_URL = "http://point.dd.works:18189/v1"
 API_KEY = 'Wf9i1OQCgKA4nAVZ__8CYJhfhExt_Yob120jbjIz0yA'
 
 MODEL = "Qwen/Qwen3-VL-235B-A22B-Instruct-FP8"
@@ -22,7 +22,7 @@ payload = {
         {"role": "user", "content": "Think about why the sky is blue."},
     ],
     "temperature": 0,
-    "max_tokens": 100,
+    # "max_tokens": 100,
 }
 
 

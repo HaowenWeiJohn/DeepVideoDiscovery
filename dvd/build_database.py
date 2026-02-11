@@ -132,6 +132,7 @@ def clip_search_tool(
         model_name=config.AOAI_EMBEDDING_LARGE_MODEL_NAME,
         input_text=[event_description],
         api_key=config.OPENAI_API_KEY,
+        is_query=True,
     )[0]['embedding']
     results = database.query(
         query_emb,
@@ -167,6 +168,7 @@ def global_browse_tool(
         model_name=config.AOAI_EMBEDDING_LARGE_MODEL_NAME,
         input_text=[query],
         api_key=config.OPENAI_API_KEY,
+        is_query=True,
     )[0]['embedding']
     results = database.query(
         query_emb,

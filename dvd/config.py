@@ -2,10 +2,14 @@ import os
 import dotenv
 
 # ------------------ video download and segmentation configuration ------------------ #
-VIDEO_DATABASE_FOLDER = "./video_database/"
+VIDEO_DATABASE_FOLDER = "/scratch/hwjwei/ADOS/video_dataset"
 
-# if the system is a linux machine, the Database folder is: /home/hwjwei/projects/longvideo/DeepVideoDiscovery/video_database/
-VIDEO_DATABASE_FOLDER = "/home/hwjwei/projects/longvideo/DeepVideoDiscovery/video_database/" if os.name == "posix" else "./video_database/"
+# check if the VIDEO_DATABASE_FOLDER exists
+if not os.path.exists(VIDEO_DATABASE_FOLDER):
+    raise FileNotFoundError(f"VIDEO_DATABASE_FOLDER {VIDEO_DATABASE_FOLDER} does not exist")
+
+# # if the system is a linux machine, the Database folder is: /home/hwjwei/projects/longvideo/DeepVideoDiscovery/video_database/
+# VIDEO_DATABASE_FOLDER = "/home/hwjwei/projects/longvideo/DeepVideoDiscovery/video_database/" if os.name == "posix" else "./video_database/"
 
 VIDEO_RESOLUTION = "360" # denotes the height of the video 
 VIDEO_FPS = 2 # frames per second
@@ -41,7 +45,7 @@ elif SERVER == "VLLM":
     print("VLLM server is used")
     OPENAI_API_KEY = os.getenv("VLLM_API_KEY")
     assert OPENAI_API_KEY is not None, "VLLM_API_KEY is not set"
-    ENDPOINT = 'https://api.dd.works/v1'
+    ENDPOINT = 'http://point.dd.works:18189/v1'
     AOAI_CAPTION_VLM_MODEL_NAME = 'Qwen/Qwen3-VL-235B-A22B-Instruct-FP8'
     AOAI_ORCHESTRATOR_LLM_MODEL_NAME = 'Qwen/Qwen3-VL-235B-A22B-Instruct-FP8'
     AOAI_TOOL_VLM_MODEL_NAME = 'Qwen/Qwen3-VL-235B-A22B-Instruct-FP8'
@@ -52,10 +56,12 @@ if SERVER == "OPENAI":
     EMBEDDING_ENDPOINT = "https://api.openai.com/v1"
     AOAI_EMBEDDING_LARGE_MODEL_NAME = "text-embedding-3-large"
     AOAI_EMBEDDING_LARGE_DIM = 3072
+    EMBEDDING_QUERY_INSTRUCTION = ""
 elif SERVER == "VLLM":
     EMBEDDING_ENDPOINT = "http://localhost:8888/v1"
     AOAI_EMBEDDING_LARGE_MODEL_NAME = "Qwen/Qwen3-Embedding-4B"
     AOAI_EMBEDDING_LARGE_DIM = 2560
+    EMBEDDING_QUERY_INSTRUCTION = "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery: "
 
 
 
