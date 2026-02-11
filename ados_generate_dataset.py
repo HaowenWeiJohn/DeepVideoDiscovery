@@ -31,7 +31,9 @@ print(video_files)
 print(f"Number of video files: {len(video_files)}")
 
 for video_file in video_files:
-
+    print("--------------------------------")
+    print(f"Processing video file: {video_file}")
+    print("--------------------------------")
     video_path = os.path.join(data_root, video_file)
     video_id = os.path.splitext(os.path.basename(video_path))[0]
     raw_dir = os.path.join(config.VIDEO_DATABASE_FOLDER, "raw")
@@ -92,3 +94,8 @@ for video_file in video_files:
             print("Captions generated.")
         else:
             print(f"Captions already exist at {caption_file}.")
+
+    print("--------------------------------")
+    print(f"Video file: {video_file} processed successfully")
+    print("--------------------------------")
+    print()

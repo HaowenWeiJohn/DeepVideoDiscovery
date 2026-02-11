@@ -158,6 +158,13 @@ Question: QUESTION_PLACEHOLDER"""
                 return msgs
 
         return msgs
+    
+    def run_with_sampled_images(self, question, n_sampled_images=8) -> list[dict]:
+        # sample 8 images from the video evenly and get the result.
+        return
+
+
+
 
     def parallel_run(self, questions, max_workers=4) -> list[list[dict]]:
         """

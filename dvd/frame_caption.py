@@ -322,7 +322,13 @@ def process_video(
             partial_registries.append(parsed["subject_registry"])
 
     # ---------------- Merge subject registries ---------- #
-    merged_registry = merge_subject_registries(partial_registries)
+    # sometime we have too many partial registries, we only evenly sample 30 of them to merge.
+    print(f"Number of partial registries: {len(partial_registries)}")
+    sampled_partial_registries = partial_registries[0:20]
+    print(f"Number of sampled partial registries: {len(sampled_partial_registries)}")
+    print(f"Merging {len(sampled_partial_registries)} partial registries...")
+
+    merged_registry = merge_subject_registries(sampled_partial_registries)
     frame_captions["subject_registry"] = merged_registry
 
     with open(
